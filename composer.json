@@ -1,0 +1,22 @@
+{
+    "name": "mabna/location",
+    "require": {
+        "phayes/geophp": "^1.2",
+        "illuminate/database": "^5.1",
+        "mabna/eloquent-repository-pattern": "dev-master",
+        "jmikola/geojson": "^1.0",
+        "illuminate/events": "^5.1"
+    },
+    "authors": [
+        {
+            "name": "masoud",
+            "email": "roohbakhsh.masoud@gmail.com"
+        }
+    ],
+	"autoload": 
+	{
+ 		"psr-4": {
+            "geo\\": "."
+        }
+	}
+}

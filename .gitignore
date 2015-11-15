@@ -1,0 +1,4 @@
+vendor/
+Docs/
+.test.json/
+.idea/
