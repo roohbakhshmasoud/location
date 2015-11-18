@@ -3,9 +3,9 @@
     "require": {
         "phayes/geophp": "^1.2",
         "illuminate/database": "^5.1",
-        "mabna/eloquent-repository-pattern": "*",
         "jmikola/geojson": "^1.0",
-        "illuminate/events": "^5.1"
+        "illuminate/events": "^5.1",
+        "mabna/eloquent-repository-pattern": "dev-master"
     },
     "authors": [
         {
@@ -20,5 +20,4 @@
         }
 	},
     "version": "1.0.0"
-
 }

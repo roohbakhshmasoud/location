@@ -21,7 +21,7 @@ interface Locator
      * @param $region
      * @return mixed
      */
-    public function getList($type,$region=null,$section=null,$model=null);
+    public function getList($type,$id);
 
     /**
      * get region ID and return section's

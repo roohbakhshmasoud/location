@@ -13,6 +13,7 @@ use Repository\Contracts\ModelRepository;
 class LocatorManager implements Locator
 {
     private $repository;
+
     function __construct($model)
     {
         $this->repository = new ModelRepository($model);
@@ -27,51 +28,54 @@ class LocatorManager implements Locator
         return $result;
     }
 
-    public function getList($type, $region=null , $section=null , $model=null)
+    public function getList($type, $id)
     {
-        if($type == Type::section && $region != null)
-            $list = $this->repository->find($region,true);
-        if($type == Type::restaurant && $section != null)
-            $list = $this->repository->findBy('location_id',$section);
-        if($type == Type::restaurant && $region != null && $model != null)
-        {
 
-            $restaurant_repository = new ModelRepository($model);
-            $region_id = $this->repository->findBy('region_id',$region);
-            
-            $ids = null;
-            foreach($sections as $sec)
-                $ids[] = $sec->id;
-            $restaurants = $restaurant_repository->findIn('location_id' , $ids);
-            return $restaurants;
-        }
-        elseif($type == Type::region)
-            $list = $this->repository->findBy('parent',null);
-        return $list;
+        $q = "SELECT  ExtractValue(geoLocation.detail , '/city') as city,
+                      ExtractValue(geoLocation.detail , '/region')  as region,
+                      ExtractValue(geoLocation.detail , '/section')  as section
+                      from geoLocation WHERE geoLocation.id = $id;";
+        $geoAdd = $this->repository->select($q);
+
+        $geoAdd = $geoAdd[0];
+
+        $geoAdd->city = trim($geoAdd->city);
+        $geoAdd->region = trim($geoAdd->region);
+        $geoAdd->section = trim($geoAdd->section);
+
+        $query="SELECT * from location WHERE location.location_type = '$type' AND
+                                           ExtractValue(location.location_trace , '/city')  = '$geoAdd->city' AND
+										   ExtractValue(location.location_trace , '/region')  = '$geoAdd->region' "." AND
+										   (ExtractValue(location.location_trace , '/section')  LIKE  '% $geoAdd->section%' OR
+										    ExtractValue(location.location_trace , '/additional')  LIKE  '%$geoAdd->section%')";
+
+//        var_dump($query);die;
+      //  $query = "select * FROM location WHERE location.geolocation_id = $id AND location.location_type = '$type'";
+        return $this->repository->select($query);
     }
 
     public function getSection($region)
     {
     }
 
-    public function nearest(Point $point, $type,$distance)
+    public function nearest(Point $point, $type, $distance)
     {
 
         $query = 'SELECT
                         *,(
                         6371000 * acos (
-                            cos ( radians('.$point->getLattitude().') )
-                            * cos( radians( lattitude ) )
-                            * cos( radians( longitude) - radians('.$point->getLangtiude().') )
-                            + sin ( radians('.$point->getLattitude().') )
-                            * sin( radians( lattitude) )
+                            cos ( radians(' . $point->getLattitude() . ') )
+                            * cos( radians( latitude ) )
+                            * cos( radians( longitude) - radians(' . $point->getLangtiude() . ') )
+                            + sin ( radians(' . $point->getLattitude() . ') )
+                            * sin( radians( latitude) )
                         )
                     ) AS distance
                 FROM
-                metadata
+                location
                 WHERE
-                location_type = '."'$type'".'
-                HAVING distance < '.$distance.'
+                location_type = ' . "'$type'" . '
+                HAVING distance < ' . $distance . '
                 ORDER BY distance';
 
         return $this->repository->findByQuery($query);
@@ -94,7 +98,7 @@ class LocatorManager implements Locator
                             $per = (object)$val->properties;
                             $region = $per->Region;
                         }
-                        if(property_exists($val, 'geometry')) {
+                        if (property_exists($val, 'geometry')) {
                             $multipoint = geoPHP::load(json_encode($val->geometry), 'json');
                             $multipoint_points = $multipoint->getComponents();
                             $json = $multipoint_points[0]->out('json');
@@ -102,8 +106,7 @@ class LocatorManager implements Locator
                             $polygon = new \League\Geotools\Polygon\Polygon(($json->coordinates));
                             if ($polygon->pointInPolygon(new \League\Geotools\Coordinate\Coordinate([$point->getLangtiude(), $point->getLattitude()])))
                                 return array("region" => $region);
-                        }
-                        else
+                        } else
                             throw new \Exception("point not found !!!!!");
                     }
                 }
@@ -114,8 +117,7 @@ class LocatorManager implements Locator
 
     public function getPolygonGeoJson($region, $section)
     {
-        if($region != null)
-        {
+        if ($region != null) {
             return $this->repository->find($region);
         }
     }

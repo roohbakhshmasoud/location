@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bdff9422ff500fb412741a513c7f9817",
-    "content-hash": "a311fbe473277ff81c324ade9c2d27d3",
+    "hash": "5ed5f0cfd9397e6e993a7283ca4d3574",
+    "content-hash": "c1a7d8498ad7b74a9614c54417a64ef0",
     "packages": [
         {
             "name": "danielstjules/stringy",
@@ -629,16 +629,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/roohbakhshmasoud/eloquent-repository-pattern.git",
-                "reference": "fd65bd5f5659b4e970b6e1effffcd9d8a9c03a3c"
+                "reference": "18667eccd41472dc20c87fec7936e01d39dbd919"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/roohbakhshmasoud/eloquent-repository-pattern/zipball/fd65bd5f5659b4e970b6e1effffcd9d8a9c03a3c",
-                "reference": "fd65bd5f5659b4e970b6e1effffcd9d8a9c03a3c",
+                "url": "https://api.github.com/repos/roohbakhshmasoud/eloquent-repository-pattern/zipball/18667eccd41472dc20c87fec7936e01d39dbd919",
+                "reference": "18667eccd41472dc20c87fec7936e01d39dbd919",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "*"
+                "illuminate/database": "*",
+                "illuminate/events": "^5.1"
             },
             "type": "library",
             "autoload": {
@@ -657,7 +658,7 @@
                 }
             ],
             "description": "this package use for implement repository pattern",
-            "time": "2015-11-02 06:55:40"
+            "time": "2015-11-15 11:41:25"
         },
         {
             "name": "nesbot/carbon",
@@ -1226,7 +1227,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "league/geotools": 0,
         "mabna/eloquent-repository-pattern": 20
     },
     "prefer-stable": false,
